@@ -19,16 +19,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
       - name: Install uv
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
+
+      - name: Install Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
 
       - name: Sync dependencies
         run: uv sync --frozen
@@ -42,16 +40,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
       - name: Install uv
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
+
+      - name: Install Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
 
       - name: Sync dependencies
         run: uv sync --frozen
@@ -65,16 +61,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
       - name: Install uv
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
+
+      - name: Install Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
 
       - name: Sync dependencies
         run: uv sync --frozen
@@ -88,16 +82,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
       - name: Install uv
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
+
+      - name: Install Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
 
       - name: Sync dependencies
         run: uv sync --frozen
@@ -111,16 +103,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
       - name: Install uv
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
+
+      - name: Install Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
 
       - name: Sync dependencies
         run: uv sync --frozen
@@ -134,16 +124,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
       - name: Install uv
         uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
+
+      - name: Install Python
+        run: uv python install ${{ env.PYTHON_VERSION }}
 
       - name: Sync dependencies
         run: uv sync --frozen
