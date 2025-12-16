@@ -1,0 +1,67 @@
+name: Build Validation
+
+on:
+  pull_request:
+    paths:
+      - "Dockerfile"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/build-validation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "Dockerfile"
+      - "pyproject.toml"
+      - "uv.lock"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Docker Image
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: production
+          push: false
+          load: true
+          tags: qna-agent:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test image
+        run: |
+          echo "Testing image build and basic functionality..."
+
+          docker images | grep qna-agent:test
+
+          SIZE=$(docker images --format "{{.Size}}" qna-agent:test)
+          echo "Image size: $SIZE"
+
+          docker run --rm qna-agent:test python -c "import qna_agent; print('Import successful')"
+
+          echo "Image validation passed!"
+
+  build-complete:
+    runs-on: ubuntu-latest
+    name: Build Status
+    needs: [build]
+    if: always()
+    steps:
+      - name: Check build status
+        run: |
+          if [[ "${{ needs.build.result }}" != "success" ]]; then
+            echo "Docker build failed"
+            exit 1
+          fi
+          echo "Docker build validation passed!"

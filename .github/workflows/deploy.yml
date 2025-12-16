@@ -1,0 +1,118 @@
+name: Deploy Application
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_tag:
+        description: "Docker image tag to deploy (default: latest)"
+        required: false
+        default: "latest"
+        type: string
+      environment:
+        description: "Target environment"
+        required: false
+        default: "production"
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  DEPLOYMENT_TAG: ${{ github.event.inputs.deployment_tag || 'latest' }}
+  ENVIRONMENT: ${{ github.event.inputs.environment || 'production' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to k3s
+    environment: ${{ github.event.inputs.environment || 'production' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.K3S_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.K3S_SERVER_IP }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Display deployment info
+        run: |
+          echo "Deploying to: ${{ env.ENVIRONMENT }}"
+          echo "Server: ${{ secrets.K3S_SERVER_IP }}"
+          echo "Tag: ${{ env.DEPLOYMENT_TAG }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+
+      - name: Pull latest code on server
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=~/.ssh/known_hosts \
+              ${{ secrets.K3S_SERVER_USER || 'root' }}@${{ secrets.K3S_SERVER_IP }} \
+              "cd /root/evrone-qna-agent && git pull origin main"
+
+      - name: Execute deployment script
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=~/.ssh/known_hosts \
+              ${{ secrets.K3S_SERVER_USER || 'root' }}@${{ secrets.K3S_SERVER_IP }} \
+              "/root/evrone-qna-agent/scripts/deploy-app.sh ${{ env.DEPLOYMENT_TAG }}"
+
+      - name: Wait for rollout
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=~/.ssh/known_hosts \
+              ${{ secrets.K3S_SERVER_USER || 'root' }}@${{ secrets.K3S_SERVER_IP }} \
+              "kubectl -n qna-agent rollout status deployment/qna-agent --timeout=5m"
+
+      - name: Health check
+        run: |
+          HEALTH_ENDPOINT="http://${{ secrets.K3S_SERVER_IP }}/health/live"
+          MAX_ATTEMPTS=10
+          ATTEMPT=1
+
+          while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_ENDPOINT" || echo "000")
+
+            if [ "$STATUS" == "200" ]; then
+              echo "Health check passed (Status: $STATUS)"
+              exit 0
+            fi
+
+            echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: Health check status $STATUS"
+            sleep 10
+            ((ATTEMPT++))
+          done
+
+          echo "Warning: Health check did not pass after $MAX_ATTEMPTS attempts"
+          exit 0
+
+      - name: Print deployment summary
+        if: always()
+        run: |
+          echo "=== Deployment Summary ==="
+          echo "Environment: ${{ env.ENVIRONMENT }}"
+          echo "Tag: ${{ env.DEPLOYMENT_TAG }}"
+          echo "Server: ${{ secrets.K3S_SERVER_IP }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Trigger: ${{ github.actor }}"
+          echo ""
+          echo "Application URL: http://${{ secrets.K3S_SERVER_IP }}"
+
+  cleanup-ssh:
+    runs-on: ubuntu-latest
+    name: Cleanup SSH
+    if: always()
+    needs: [deploy]
+
+    steps:
+      - name: Remove SSH key
+        if: always()
+        run: |
+          rm -f ~/.ssh/id_rsa
+          rm -f ~/.ssh/known_hosts
+          echo "SSH cleanup complete"

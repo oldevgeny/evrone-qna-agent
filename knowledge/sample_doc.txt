@@ -1,0 +1,36 @@
+QnA Agent Knowledge Base - Sample Document
+==========================================
+
+This is a sample document demonstrating the knowledge base functionality.
+
+About the QnA Agent
+-------------------
+The QnA Agent is an AI-powered question-answering system that uses:
+- FastAPI for the web framework
+- LiteLLM for LLM provider abstraction (OpenRouter)
+- SQLite/PostgreSQL for conversation storage
+- Server-Sent Events (SSE) for real-time updates
+
+Key Features
+------------
+1. Chat Management: Create, list, and delete chat sessions
+2. Message History: Full conversation history with context
+3. Tool Calling: The agent can search and read knowledge base files
+4. Real-time Updates: SSE notifications for chat events
+
+API Endpoints
+-------------
+- POST /api/v1/chats - Create a new chat
+- GET /api/v1/chats - List all chats
+- GET /api/v1/chats/{id} - Get chat details
+- POST /api/v1/chats/{id}/messages - Send a message and get AI response
+- GET /api/v1/chats/{id}/events - Subscribe to SSE events
+
+Example Usage
+-------------
+1. Create a new chat session
+2. Send a message asking about the knowledge base
+3. The agent will use tools to search and read relevant documents
+4. Receive an AI-generated response based on the knowledge base
+
+For more information, refer to the project README.

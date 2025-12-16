@@ -1,0 +1,45 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.9
+    hooks:
+      - id: ruff-format
+        name: Ruff Format
+
+      - id: ruff
+        name: Ruff Lint
+        args: [--fix]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        name: Trim Trailing Whitespace
+
+      - id: end-of-file-fixer
+        name: Fix End of File
+
+      - id: check-yaml
+        name: Check YAML
+
+      - id: check-json
+        name: Check JSON
+
+      - id: detect-private-key
+        name: Detect Private Key
+
+      - id: check-added-large-files
+        name: Check for Large Files
+        args: ["--maxkb=1000"]
+
+  - repo: local
+    hooks:
+      - id: squawk-migrations
+        name: Squawk Migration Lint
+        entry: bash -c 'uv run alembic upgrade head --sql 2>/dev/null | uv run squawk || true'
+        language: system
+        pass_filenames: false
+        files: alembic/versions/.*\.py$
+        verbose: true
+
+default_stages: [pre-commit]
+fail_fast: false
