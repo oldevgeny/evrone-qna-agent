@@ -13,6 +13,7 @@ on:
       - "Dockerfile"
       - "pyproject.toml"
       - "uv.lock"
+      - ".github/workflows/build-validation.yml"
 
 jobs:
   build:
@@ -36,8 +37,8 @@ jobs:
           push: false
           load: true
           tags: qna-agent:test
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=build-v2
+          cache-to: type=gha,mode=max,scope=build-v2
 
       - name: Test image
         run: |
@@ -48,6 +49,13 @@ jobs:
           SIZE=$(docker images --format "{{.Size}}" qna-agent:test)
           echo "Image size: $SIZE"
 
+          echo "=== Python version ==="
+          docker run --rm qna-agent:test python --version
+
+          echo "=== Python path ==="
+          docker run --rm qna-agent:test python -c "import sys; print(sys.executable); print(sys.path)"
+
+          echo "=== Testing import ==="
           docker run --rm qna-agent:test python -c "import qna_agent; print('Import successful')"
 
           echo "Image validation passed!"
