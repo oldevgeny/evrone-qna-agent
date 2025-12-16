@@ -50,13 +50,17 @@ class Message(Base, UUIDMixin, TimestampMixin):
         return f"<Message(id={self.id}, role={self.role}, chat_id={self.chat_id})>"
 
     def to_openai_format(self) -> dict[str, Any]:
-        """Convert message to OpenAI API format."""
+        """Convert message to OpenAI API format for LLM history.
+
+        Note: tool_calls are excluded because we don't persist
+        the corresponding tool response messages. Including tool_calls
+        without tool responses would cause OpenAI API validation errors.
+        Tool calls are still stored in the database for audit/debugging.
+        """
         msg: dict[str, Any] = {
             "role": self.role.value,
             "content": self.content,
         }
-        if self.tool_calls:
-            msg["tool_calls"] = self.tool_calls
         if self.tool_call_id:
             msg["tool_call_id"] = self.tool_call_id
         return msg

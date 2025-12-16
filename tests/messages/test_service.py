@@ -165,11 +165,16 @@ async def test_count_chat_messages_empty(
 
 
 @pytest.mark.anyio
-async def test_get_chat_history_includes_tool_calls(
+async def test_get_chat_history_excludes_tool_calls(
     message_service: MessageService,
     chat_in_db: Chat,
 ) -> None:
-    """Test that OpenAI format includes tool_calls when present."""
+    """Test that OpenAI format excludes tool_calls.
+
+    Tool calls are stored in DB for audit but excluded from LLM history
+    because we don't persist the corresponding tool response messages.
+    Including tool_calls without tool responses would cause OpenAI API errors.
+    """
     tool_calls = [{"id": "call_1", "function": {"name": "test"}}]
 
     await message_service.create(
@@ -181,7 +186,7 @@ async def test_get_chat_history_includes_tool_calls(
 
     history = await message_service.get_chat_history_for_llm(chat_in_db.id)
 
-    assert history[0]["tool_calls"] == tool_calls
+    assert "tool_calls" not in history[0]
 
 
 @pytest.mark.anyio

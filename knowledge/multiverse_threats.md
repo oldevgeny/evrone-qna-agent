@@ -11,6 +11,7 @@ Threats are classified on a scale of 1-10:
 ## Active Threats
 
 ### 1. The Entropy Cascade (Level 8)
+
 A spreading phenomenon causing accelerated decay in affected universes. Currently contained to Layer Beta.
 
 **Origin**: Unknown
@@ -19,6 +20,7 @@ A spreading phenomenon causing accelerated decay in affected universes. Currentl
 **Affected universes**: 12,847
 
 ### 2. The Void Walkers (Level 6)
+
 Entities born from the space between realities. They consume dimensional energy.
 
 **Origin**: The Void
@@ -27,6 +29,7 @@ Entities born from the space between realities. They consume dimensional energy.
 **Known individuals**: ~2,000
 
 ### 3. The Paradox Engine (Level 9)
+
 An ancient machine that creates temporal paradoxes. Location unknown.
 
 **Origin**: Possibly Universe-2847
@@ -35,6 +38,7 @@ An ancient machine that creates temporal paradoxes. Location unknown.
 **Last activation**: Destroyed Universe-500
 
 ### 4. Malkor the Unmaker (Level 7)
+
 A rogue Architect who seeks to "simplify" the multiverse by collapsing realities.
 
 **Origin**: Universe-0
@@ -43,6 +47,7 @@ A rogue Architect who seeks to "simplify" the multiverse by collapsing realities
 **Bounty**: 10 million Universal Credits
 
 ### 5. The Convergence Cult (Level 5)
+
 A religious organization seeking to trigger another Great Convergence.
 
 **Origin**: Multiple universes
@@ -51,6 +56,7 @@ A religious organization seeking to trigger another Great Convergence.
 **Members**: ~100,000
 
 ### 6. Reality Cancer (Level 8)
+
 A metaphysical disease that causes universes to develop inconsistencies until collapse.
 
 **Origin**: Layer Gamma
@@ -59,6 +65,7 @@ A metaphysical disease that causes universes to develop inconsistencies until co
 **Infected universes**: 3
 
 ### 7. [CLASSIFIED] (Level 10)
+
 Information restricted to Council members only.
 
 ## Historical Threats (Resolved)

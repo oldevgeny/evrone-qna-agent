@@ -73,6 +73,7 @@ async def create_message(
         chat_id=chat_id,
         role=MessageRole.ASSISTANT,
         content=assistant_response.content,
+        tool_calls=assistant_response.tool_calls,
     )
 
     return ChatCompletionResponse(
