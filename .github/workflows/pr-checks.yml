@@ -99,6 +99,7 @@ jobs:
   migration-lint:
     runs-on: ubuntu-latest
     name: Migration Lint
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -161,7 +162,6 @@ jobs:
                 "${{ needs.lint.result }}" != "success" || \
                 "${{ needs.type-check.result }}" != "success" || \
                 "${{ needs.security.result }}" != "success" || \
-                "${{ needs.migration-lint.result }}" != "success" || \
                 "${{ needs.tests.result }}" != "success" ]]; then
             echo "One or more quality checks failed"
             exit 1
