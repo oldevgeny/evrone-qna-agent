@@ -33,16 +33,11 @@ jobs:
         run: |
           echo "Testing image build and basic functionality..."
 
-          docker images | grep qna-agent:test
-
-          SIZE=$(docker images --format "{{.Size}}" qna-agent:test)
-          echo "Image size: $SIZE"
+          echo "=== Verifying image exists ==="
+          docker image inspect qna-agent:test --format='Image: {{.RepoTags}} Size: {{.Size}}'
 
           echo "=== Python version ==="
           docker run --rm qna-agent:test python --version
-
-          echo "=== Python path ==="
-          docker run --rm qna-agent:test python -c "import sys; print(sys.executable); print(sys.path)"
 
           echo "=== Testing import ==="
           docker run --rm qna-agent:test python -c "import qna_agent; print('Import successful')"
