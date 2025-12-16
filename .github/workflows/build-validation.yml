@@ -26,19 +26,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Build image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          target: production
-          push: false
-          load: true
-          tags: qna-agent:test
-          cache-from: type=gha,scope=build-v2
-          cache-to: type=gha,mode=max,scope=build-v2
+        run: docker build --target production -t qna-agent:test .
 
       - name: Test image
         run: |
