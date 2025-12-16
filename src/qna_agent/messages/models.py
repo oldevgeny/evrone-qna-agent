@@ -4,7 +4,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
-from sqlalchemy import JSON, Enum, ForeignKey, String, Text
+from sqlalchemy import JSON, Enum, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from qna_agent.models import Base, TimestampMixin, UUIDMixin
@@ -40,7 +40,7 @@ class Message(Base, UUIDMixin, TimestampMixin):
         nullable=True,
     )
     tool_call_id: Mapped[str | None] = mapped_column(
-        String(255),
+        Text,
         nullable=True,
     )
 

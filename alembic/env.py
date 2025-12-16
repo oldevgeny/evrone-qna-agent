@@ -8,9 +8,9 @@ from sqlalchemy import pool, text
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from qna_agent.chats.models import Chat
+from qna_agent.chats.models import Chat  # noqa: F401 - needed for Alembic
 from qna_agent.config import get_settings
-from qna_agent.messages.models import Message
+from qna_agent.messages.models import Message  # noqa: F401 - needed for Alembic
 from qna_agent.models import Base
 
 config = context.config
@@ -29,6 +29,15 @@ def get_url() -> str:
     return get_settings().database_url
 
 
+def emit_postgres_timeouts() -> None:
+    """Emit PostgreSQL timeout settings for offline mode.
+
+    Always emit in offline mode since SQL output is for PostgreSQL/squawk.
+    """
+    context.execute(f"SET lock_timeout = '{POSTGRES_LOCK_TIMEOUT}'")
+    context.execute(f"SET statement_timeout = '{POSTGRES_STATEMENT_TIMEOUT}'")
+
+
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode."""
     url = get_url()
@@ -40,6 +49,7 @@ def run_migrations_offline() -> None:
     )
 
     with context.begin_transaction():
+        emit_postgres_timeouts()
         context.run_migrations()
 
 

@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import JSON, String
+from sqlalchemy import JSON, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from qna_agent.models import Base, TimestampMixin, UUIDMixin
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class Chat(Base, UUIDMixin, TimestampMixin):
     """Chat session model."""
 
-    title: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    title: Mapped[str | None] = mapped_column(Text, nullable=True)
     metadata_: Mapped[dict[str, Any]] = mapped_column(
         "metadata",
         JSON,
