@@ -1,0 +1,9 @@
+# Squawk configuration
+# https://squawkhq.com/docs/configuration
+
+# Exclude rules that trigger on Alembic's auto-generated alembic_version table.
+# This table is created by Alembic itself and cannot be modified.
+excluded_rules = [
+    "prefer-robust-stmts",
+    "prefer-text-field",
+]
