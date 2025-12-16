@@ -8,7 +8,6 @@ on:
 
 env:
   PYTHON_VERSION: "3.14"
-  UV_CACHE_DIR: ${{ runner.temp }}/.cache/uv
 
 jobs:
   format-check:
